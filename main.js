@@ -1,35 +1,62 @@
-// const domElements = {
-//     inputValue : document.getElementById('inputValue'),
-//     addButton : document.getElementById('addTodos'),
-//     clearButton: document.getElementById('removeTodos')
-// }
 const todoArr = [];
 class Todo {
 
-    constructor(todo) {
+    constructor(todo, id) {
         this.todo = todo
         this.isDone = false;
-        this.constructor.counter = (this.constructor.counter || 0) + 1;
-        this._id = this.constructor.counter;
-
     }
-
 }
 
-function addTodo() {
-
+const addTodo = () => {
     var inputValue = document.getElementById('inputValue');
     var inputValue = inputValue.value;
-    var todo = new Todo(inputValue);
 
-    todoArr.push(todo)
-
-    var displayTodos = document.getElementById('displayTodos')
-    var li = document.createElement('li');
-    displayTodos.appendChild(li);
-
-    li.innerText = todo.todo
-
-
+    if (inputValue === "") {
+        console.log('ad');
+    } else {
+        var todo = new Todo(inputValue);
+        todoArr.push(todo);
+        displayTodos();
+    }
 }
+
+const deleteTodo = () => {
+
+    const btn = event.target;
+    const index = parseInt(btn.parentElement.getAttribute("idx"));
+    todoArr.splice(index, 1);
+
+    displayTodos();
+}
+
+
+const completeTodo = () => {
+
+    const btn = event.target;
+    const index = parseInt(btn.parentElement.getAttribute("idx"));
+    var selectedTodo = todoArr[index];
+    selectedTodo.isDone = !selectedTodo.isDone;
+
+    displayTodos();
+}
+
 document.getElementById('addTodos').addEventListener("click", addTodo);
+
+function displayTodos() {
+
+    var todos = "";
+
+    todoArr.map((todo, i) => {
+        if (todo.isDone) {
+            todos = todos + ` <li style="text-decoration: line-through" id="comp" idx="${i}"> ${i+1 }. ${todo.todo}</div> <button id="deleteTodo"type="button" onclick="deleteTodo()">Delete</button>
+            <button id="completeTodo"type="button" onclick="completeTodo()">Undone</button></li>`;
+        } else {
+            todos = todos + `<li id="comp" idx="${i}">  ${i+1 }. ${todo.todo}</div> <button id="deleteTodo"type="button" onclick="deleteTodo()">Delete</button>
+            <button id="completeTodo"type="button" onclick="completeTodo()">Done</button></li>`;
+        }
+    });
+
+    document.getElementById("displayTodos").innerHTML = todos;
+    document.getElementById("arrSize").innerHTML = todoArr.length;
+  
+}
